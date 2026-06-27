@@ -11,19 +11,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Transactional을 테스트에서 사용하면 각 테스트마다 rollback 한다.
+ */
+@Transactional
 @SpringBootTest
 class ItemRepositoryTest {
 
     @Autowired
     ItemRepository itemRepository;
 
-    @Autowired
+    /*@Autowired
     PlatformTransactionManager transactionManager;
     TransactionStatus status;
 
@@ -31,7 +37,7 @@ class ItemRepositoryTest {
     void beforeEach() {
         // Transaction Start
         status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-    }
+    }*/
 
     @AfterEach
     void afterEach() {
@@ -41,9 +47,11 @@ class ItemRepositoryTest {
         }
 
         // Transaction Rollback
-        transactionManager.rollback(status);
+        // transactionManager.rollback(status);
     }
 
+    @Commit // rollback 하지 않고 commit 수행
+    @Transactional
     @Test
     void save() {
         //given
